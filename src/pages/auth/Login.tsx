@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import LightPillar from "../../components/specific/LightPillar";
 import { useNavigate } from "react-router-dom";
-import { Stethoscope, Activity, Flower2, Leaf, CheckCircle2, FileUp } from "lucide-react";
+import { Stethoscope, Activity, Flower2, Leaf } from "lucide-react";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
@@ -37,8 +37,6 @@ const Login = () => {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [speciality, setSpeciality] = useState("");
-  const [licenseFile, setLicenseFile] = useState<File | null>(null);
-  const [govtIdFile, setGovtIdFile] = useState<File | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -93,7 +91,7 @@ const Login = () => {
         govtIdUrl: "mock-govt-id-url"
       });
 
-      const { token, status, category: userCategory } = response.data;
+      const { token, category: userCategory } = response.data;
       localStorage.setItem("doctorToken", token);
 
       // Navigate based on category
