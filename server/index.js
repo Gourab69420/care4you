@@ -13,15 +13,9 @@ const nodemailer = require('nodemailer');
 
 const io = new Server(server, {
     cors: {
-        origin: [
-            "http://localhost:3000", 
-            "http://localhost:3001", 
-            "http://192.168.29.164:3000", 
-            "http://192.168.29.164:3001",
-            "https://web-production-ef36e.up.railway.app",
-            /\.railway\.app$/,
-            /\.vercel\.app$/
-        ],
+        origin: function(origin, callback) {
+            callback(null, true); // Allow all origins for Socket.io
+        },
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true
     }
@@ -35,15 +29,26 @@ const authLimiter = rateLimit({
 });
 
 app.use(cors({
-    origin: [
-        "http://localhost:3000", 
-        "http://localhost:3001", 
-        "http://192.168.29.164:3000", 
-        "http://192.168.29.164:3001",
-        "https://web-production-ef36e.up.railway.app",
-        /\.railway\.app$/,
-        /\.vercel\.app$/
-    ],
+    origin: function(origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://192.168.29.164:3000",
+            "https://web-production-ef36e.up.railway.app"
+        ];
+        
+        // Check if origin is allowed or matches railway/vercel pattern
+        if (allowedOrigins.includes(origin) || 
+            origin.endsWith('.railway.app') || 
+            origin.endsWith('.vercel.app')) {
+            callback(null, true);
+        } else {
+            callback(null, true); // Allow all for now
+        }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
