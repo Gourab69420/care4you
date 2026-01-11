@@ -447,6 +447,30 @@ app.get('/', (req, res) => {
     res.send('NabhaCare API is running');
 });
 
+// Health check endpoint
+app.get('/health', async (req, res) => {
+    try {
+        // Test database connection
+        await db.query('SELECT NOW()');
+        res.json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            environment: process.env.NODE_ENV || 'development',
+            port: parseInt(process.env.PORT) || 5000,
+            database: process.env.DATABASE_URL ? 'connected (Railway)' : 'connected (Local)',
+            cors: 'enabled',
+            socketio: 'enabled'
+        });
+    } catch (err) {
+        res.status(503).json({
+            status: 'unhealthy',
+            error: 'Database connection failed',
+            message: err.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // User Registration Endpoint
 app.post('/api/users', async (req, res) => {
     const { name, email, mobile, role, speciality, visiting_hours } = req.body;
@@ -793,10 +817,11 @@ io.on('connection', (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT) || 5000;
 
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Database: ${process.env.DATABASE_URL ? 'Railway PostgreSQL' : 'Local PostgreSQL'}`);
 });
 
