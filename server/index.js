@@ -37,7 +37,8 @@ app.use(cors({
             "http://localhost:3000",
             "http://localhost:3001",
             "http://192.168.29.164:3000",
-            "https://web-production-ef36e.up.railway.app"
+            "https://web-production-ef36e.up.railway.app",
+            "https://sprightly-twilight-8c1431.netlify.app"
         ];
         
         // Check if origin is allowed or matches railway/vercel pattern
