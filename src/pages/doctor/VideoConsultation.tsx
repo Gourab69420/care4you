@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Video, Mic, MicOff, VideoOff, PhoneOff, Users } from 'lucide-react';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000');
 
 const VideoConsultation = () => {
     const [stream, setStream] = useState<MediaStream | null>(null);
